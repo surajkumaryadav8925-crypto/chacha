@@ -6,7 +6,7 @@
   "description": "हमारी यादों की दुनिया — an interactive 3D sphere made of family photographs",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build",
+    "build": "node ./node_modules/typescript/bin/tsc --noEmit && node ./node_modules/vite/bin/vite.js build",
     "preview": "vite preview",
     "photos": "node scripts/prepare-photos.mjs"
   },
