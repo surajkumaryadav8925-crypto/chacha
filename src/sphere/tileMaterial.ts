@@ -54,13 +54,13 @@ const fragmentShader = /* glsl */ `
     // soft planet lighting: cards turn away from the viewer near the rim
     float facing = clamp(dot(normalize(vWorldNormal), normalize(vViewDir)), 0.0, 1.0);
     float key = clamp(dot(normalize(vWorldNormal), normalize(vec3(-0.4, 0.66, 0.62))), 0.0, 1.0);
-    float shade = mix(0.4, 1.0, smoothstep(0.02, 0.92, facing));
-    shade *= 0.9 + 0.16 * key;
+    float shade = mix(0.46, 1.06, smoothstep(0.0, 0.92, facing));
+    shade *= 0.92 + 0.14 * key;
     color *= shade;
 
     // gentle per-photo vignette, keeps the mosaic from feeling flat
     vec2 centred = vUv - 0.5;
-    color *= 1.0 - 0.2 * dot(centred, centred) * 4.0;
+    color *= 1.0 - 0.14 * dot(centred, centred) * 4.0;
 
     // fine dark edge + warm rim that lights up on hover
     float edgeWidth = max(0.006, min(uTileSize.x, uTileSize.y) * 0.032);

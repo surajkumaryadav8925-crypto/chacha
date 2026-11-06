@@ -153,6 +153,7 @@ body {
   z-index: 30;
   opacity: 0;
   pointer-events: none;
+  outline: none;
   transition: opacity 0.4s ease;
 }
 

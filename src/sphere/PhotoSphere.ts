@@ -108,7 +108,9 @@ export class PhotoSphere {
 
     this.renderer = new WebGLRenderer({
       canvas,
-      antialias: true,
+      // the photo cards antialias their own rounded edges in the shader, so
+      // MSAA only adds fill-rate cost on high-DPI screens
+      antialias: false,
       alpha: true,
       powerPreference: 'high-performance',
       stencil: false,
@@ -505,7 +507,11 @@ export class PhotoSphere {
     this.autoAmount = 0;
 
     this.pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
-    this.options.canvas.setPointerCapture?.(event.pointerId);
+    try {
+      this.options.canvas.setPointerCapture(event.pointerId);
+    } catch {
+      // some environments refuse capture for synthetic pointers — dragging still works
+    }
 
     if (this.pointers.size === 1) {
       this.dragging = true;
@@ -576,8 +582,12 @@ export class PhotoSphere {
   private onPointerUp = (event: PointerEvent): void => {
     if (!this.pointers.has(event.pointerId)) return;
     this.pointers.delete(event.pointerId);
-    if (this.options.canvas.hasPointerCapture?.(event.pointerId)) {
-      this.options.canvas.releasePointerCapture(event.pointerId);
+    try {
+      if (this.options.canvas.hasPointerCapture(event.pointerId)) {
+        this.options.canvas.releasePointerCapture(event.pointerId);
+      }
+    } catch {
+      // ignore — nothing to release
     }
 
     if (this.pointers.size > 0) {
@@ -685,7 +695,14 @@ export class PhotoSphere {
   private resize(): void {
     const width = window.innerWidth;
     const height = window.innerHeight;
-    const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+
+    // Cap the drawing buffer instead of the DPR alone: a 5K window at DPR 2
+    // would otherwise rasterise ~15M pixels and drop well below 60fps.
+    const maxPixels = 5_000_000;
+    const pixelRatio = Math.max(
+      1,
+      Math.min(window.devicePixelRatio || 1, 2, Math.sqrt(maxPixels / Math.max(width * height, 1))),
+    );
 
     this.renderer.setPixelRatio(pixelRatio);
     this.renderer.setSize(width, height, false);

@@ -12,7 +12,13 @@ const resolveAsset = (path: string): string => `${import.meta.env.BASE_URL}${pat
 function boot(): void {
   const canvas = document.getElementById('scene');
   const loading = document.getElementById('loading');
-  const hideLoading = (): void => loading?.classList.add('is-hidden');
+  let loadingHidden = false;
+  const hideLoading = (): void => {
+    if (loadingHidden || !loading) return;
+    loadingHidden = true;
+    loading.classList.add('is-hidden');
+    window.setTimeout(() => loading.remove(), 1200);
+  };
 
   if (!(canvas instanceof HTMLCanvasElement) || photos.length === 0 || !isWebGLAvailable()) {
     showFallback(photos, resolveAsset);

@@ -17,10 +17,10 @@ export class PhotoViewer {
   private readonly root: HTMLDivElement;
   private readonly img: HTMLImageElement;
   private readonly counter: HTMLParagraphElement;
-  private readonly closeButton: HTMLButtonElement;
 
   private index = 0;
   private opened = false;
+  private openedAt = 0;
   private origin: Rect | null = null;
   private previousFocus: HTMLElement | null = null;
   private closeTimer = 0;
@@ -38,6 +38,7 @@ export class PhotoViewer {
     this.root.setAttribute('aria-modal', 'true');
     this.root.setAttribute('aria-label', 'तस्वीर देखें');
     this.root.setAttribute('aria-hidden', 'true');
+    this.root.tabIndex = -1;
     this.root.innerHTML = `
       <div class="viewer__backdrop"></div>
       <div class="viewer__stage"><img class="viewer__img" alt="" draggable="false" /></div>
@@ -57,13 +58,14 @@ export class PhotoViewer {
     }
     this.img = img;
     this.counter = counter;
-    this.closeButton = close;
 
     prev.addEventListener('click', () => this.step(-1));
     next.addEventListener('click', () => this.step(1));
     close.addEventListener('click', () => this.close());
 
     this.root.addEventListener('click', (event) => {
+      // the click that opened the viewer can land on the fresh backdrop
+      if (performance.now() - this.openedAt < 400) return;
       const target = event.target as HTMLElement;
       if (target === this.img || target.closest('button')) return;
       this.close();
@@ -78,6 +80,7 @@ export class PhotoViewer {
   open(index: number, origin: Rect | null): void {
     window.clearTimeout(this.closeTimer);
     this.opened = true;
+    this.openedAt = performance.now();
     this.index = index;
     this.origin = origin;
     this.previousFocus = document.activeElement as HTMLElement | null;
@@ -85,7 +88,7 @@ export class PhotoViewer {
     document.getElementById('app')?.classList.add('is-viewing');
     this.root.classList.add('is-open');
     this.root.setAttribute('aria-hidden', 'false');
-    this.closeButton.focus({ preventScroll: true });
+    this.root.focus({ preventScroll: true });
 
     this.layout(index);
     this.animateIn(origin);
@@ -96,8 +99,8 @@ export class PhotoViewer {
     if (!this.opened) return;
     this.opened = false;
     window.clearTimeout(this.swapTimer);
+    this.img.classList.remove('is-swapping');
     this.root.classList.remove('is-open');
-    this.root.setAttribute('aria-hidden', 'true');
     document.getElementById('app')?.classList.remove('is-viewing');
 
     const width = this.img.offsetWidth;
@@ -119,6 +122,7 @@ export class PhotoViewer {
     this.closeTimer = window.setTimeout(() => {
       this.img.style.opacity = '1';
       this.img.style.transform = '';
+      this.root.setAttribute('aria-hidden', 'true');
       this.previousFocus?.focus?.({ preventScroll: true });
       this.onClose?.();
     }, CLOSE_MS);
@@ -161,6 +165,7 @@ export class PhotoViewer {
     this.img.style.height = `${size.height}px`;
     this.img.style.left = `${(window.innerWidth - size.width) / 2}px`;
     this.img.style.top = `${(window.innerHeight - size.height) / 2}px`;
+    this.img.classList.remove('is-swapping');
     this.img.style.transition = 'none';
     this.img.style.transform = '';
     this.img.style.borderRadius = '16px';

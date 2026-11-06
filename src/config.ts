@@ -8,9 +8,9 @@ export const CONFIG = {
     /** How many photo tiles the globe should be made of. */
     targetTiles: 200,
     /** Tile width / tile height (a soft portrait card). */
-    tileAspect: 0.8,
+    tileAspect: 0.94,
     /** Share of the sphere surface covered by tiles (rest is breathing room). */
-    coverage: 0.7,
+    coverage: 0.78,
   },
   camera: {
     fov: 42,
