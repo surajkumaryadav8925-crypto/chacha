@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="hi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#04060f" />
+    <meta name="description" content="हमारी यादों की दुनिया — परिवार की तस्वीरों से बना एक बड़ा, घूमने वाला 3D गोला।" />
+    <title>हमारी यादों की दुनिया ❤️</title>
+  </head>
+  <body>
+    <main id="app">
+      <canvas
+        id="scene"
+        role="application"
+        aria-label="परिवार की तस्वीरों से बना तीन-आयामी गोला। खींचकर घुमाएँ, तस्वीर पर क्लिक करें।"
+      ></canvas>
+
+      <header class="intro">
+        <h1>हमारी यादों की दुनिया ❤️</h1>
+        <p>घुमाएँ • ज़ूम करें • तस्वीरों को देखें</p>
+      </header>
+
+      <p class="loading" id="loading" aria-live="polite">यादें सज रही हैं…</p>
+
+      <div id="viewer-root"></div>
+
+      <section id="fallback" class="fallback" hidden>
+        <h2>हमारी यादों की दुनिया ❤️</h2>
+        <p>इस ब्राउज़र में 3D दृश्य उपलब्ध नहीं है, इसलिए सारी तस्वीरें नीचे दिखाई गई हैं।</p>
+        <div class="fallback__grid" id="fallback-grid"></div>
+      </section>
+    </main>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

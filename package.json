@@ -1,0 +1,22 @@
+{
+  "name": "memory-sphere",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "हमारी यादों की दुनिया — an interactive 3D sphere made of family photographs",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "photos": "node scripts/prepare-photos.mjs"
+  },
+  "dependencies": {
+    "three": "^0.187.0"
+  },
+  "devDependencies": {
+    "@types/three": "^0.187.0",
+    "sharp": "^0.35.5",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.6"
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "steps": [],
+  "errors": [],
+  "fatal": "Error: Uncaught\n    at file:///D:/uncle/memory-sphere/.checks/drive.mjs:57:37\n    at async main (file:///D:/uncle/memory-sphere/.checks/drive.mjs:129:22)"
+}
